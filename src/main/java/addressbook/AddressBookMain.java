@@ -3,14 +3,19 @@ package addressbook;
 import java.util.*;
 
 public class AddressBookMain {
+    public static final String CSV_FILE_PATH = "address-book.csv";
     public enum IOService {
-        CONSOLE_IO, FILE_IO
+        CONSOLE_IO, FILE_IO, CSV_FILE
     }
     private List<Contacts> addressbooklist;
 
     public AddressBookMain(List<Contacts> addressbooklist) {
         this.addressbooklist = addressbooklist;
     }
+
+    public AddressBookMain() {
+    }
+
     public void readAddressBookData(Scanner consoleInputReader) {
         System.out.println("Enter firstname");
         String firstName = consoleInputReader.next();
@@ -30,22 +35,39 @@ public class AddressBookMain {
         String email = consoleInputReader.next();
         addressbooklist.add(new Contacts(firstName,lastName,address,city,state,zip,phoneNumber,email));
     }
+    //uc-13
     public void writeAddressBookData(IOService ioService) {
         if (ioService.equals(IOService.CONSOLE_IO))
             System.out.println("\nWriting Address Book Roaster to Console\n" + addressbooklist);
         else
             new AddressBookIO().writeData(addressbooklist);
     }
+    //uc-14
+    public void writeCSVAddressBookData(IOService ioService) {
+        if (ioService.equals(IOService.CONSOLE_IO))
+            System.out.println("\nWriting Address Book Roaster to Console\n" + addressbooklist);
+        else
+            new AddressBookCSV().writeCSVData();
+    }
+    //uc-13
     public long readAddressBookData(IOService ioService) {
         if (ioService.equals(IOService.FILE_IO))
             this.addressbooklist = new AddressBookIO().readData();
         return addressbooklist.size();
     }
+    //uc-14
+    public long readCSVAddressBookData(IOService ioService) {
+        if (ioService.equals(IOService.CONSOLE_IO))
+            new AddressBookCSV().readData(CSV_FILE_PATH);
+        return AddressBookCSV.readData(CSV_FILE_PATH);
+    }
+
     public long countEntries(IOService ioService) {
         if (ioService.equals(IOService.FILE_IO))
             return new AddressBookIO().countEntries();
         return 0;
     }
+
     public void printData(IOService ioService) {
         if (ioService.equals(IOService.FILE_IO))
             new AddressBookIO().printData();
@@ -57,7 +79,4 @@ public class AddressBookMain {
         addressBook.readAddressBookData(consoleInputReader);
         addressBook.writeAddressBookData(IOService.CONSOLE_IO);
     }
-
-
-
 }
